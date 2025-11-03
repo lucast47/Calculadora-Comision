@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Calculadora de Cumplimiento Integral</title>
+<style>
+  :root{
+    --primary:#2563eb;
+    --card-bg:#fff;
+    --muted:#6b7280;
+    --surface:#f8fafc;
+  }
+  body{
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--surface);
+    margin: 36px;
+    color:#111827;
+  }
+  h1{
+    text-align:center;
+    color:#0f172a;
+    margin-bottom:20px;
+  }
+  .card{
+    max-width:960px;
+    margin:0 auto;
+    background:var(--card-bg);
+    padding:24px;
+    border-radius:12px;
+    box-shadow:0 6px 18px rgba(15,23,42,0.08);
+  }
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:18px;
+    background:#fff;
+    border-radius:8px;
+    overflow:hidden;
+    box-shadow:0 4px 12px rgba(2,6,23,0.04);
+  }
+  th,td{
+    padding:10px 12px;
+    border-bottom:1px solid #e6edf3;
+    text-align:right;
+    font-size:0.95rem;
+  }
+  thead th{
+    background:var(--primary);
+    color:#fff;
+    font-weight:600;
+    text-align:right;
+  }
+  tbody td:first-child, thead th:first-child {
+    text-align:left;
+  }
+  input[type="number"] {
+    width:80px;
+    padding:6px;
+    border-radius:6px;
+    border:1px solid #d1d5db;
+    text-align:right;
+  }
+  tfoot td {
+    font-weight:700;
+    font-size:1.05rem;
+    background:#f9fafb;
+  }
+  #resultadoTotal {
+    font-weight:bold;
+    font-size:1.25rem;
+    color:#0f172a;
+    text-align:right;
+    margin-top:12px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Calculadora de Cumplimiento Integral</h1>
+
+<div class="card">
+  <table id="tablaCumplimiento">
+    <thead>
+      <tr>
+        <th>Variable</th>
+        <th>Ponderación (%)</th>
+        <th>Piso (%)</th>
+        <th>Cumplimiento Real (%)</th>
+        <th>Puntaje</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Stock de Clientes Activos</td>
+        <td>6</td>
+        <td>80</td>
+        <td><input type="number" min="0" max="200" value="0"></td>
+        <td class="puntaje">0</td>
+      </tr>
+      <tr>
+        <td>Desembolsos Micro (#)</td>
+        <td>25</td>
+        <td>85</td>
+        <td><input type="number" min="0" max="200" value="0"></td>
+        <td class="puntaje">0</td>
+      </tr>
+      <tr>
+        <td>Desembolsos Micro ($)</td>
+        <td>20</td>
+        <td>85</td>
+        <td><input type="number" min="0" max="200" value="0"></td>
+        <td class="puntaje">0</td>
+      </tr>
+      <tr>
+        <td>Desembolsos Consumo</td>
+        <td>10</td>
+        <td>80</td>
+        <td><input type="number" min="0" max="200" value="0"></td>
+        <td class="puntaje">0</td>
+      </tr>
+      <tr>
+        <td>Fidelización</td>
+        <td>5</td>
+        <td>75</td>
+        <td><input type="number" min="0" max="200" value="0"></td>
+        <td class="puntaje">0</td>
+      </tr>
+      <tr>
+        <td>Gestión Integral</td>
+        <td>8</td>
+        <td>80</td>
+        <td><input type="number" min="0" max="200" value="0"></td>
+        <td class="puntaje">0</td>
+      </tr>
+      <tr>
+        <td>Colocación Seguros</td>
+        <td>6</td>
+        <td>80</td>
+        <td><input type="number" min="0" max="200" value="0"></td>
+        <td class="puntaje">0</td>
+      </tr>
+      <tr>
+        <td>Recuperación Cartera</td>
+        <td>20</td>
+        <td>75</td>
+        <td><input type="number" min="0" max="200" value="0"></td>
+        <td class="puntaje">0</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="4" style="text-align:right;">TOTAL CUMPLIMIENTO:</td>
+        <td id="totalPuntaje">0</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <div id="resultadoTotal"></div>
+</div>
+
+<script>
+function calcularPuntaje(cumplimiento, piso, ponderacion){
+  const techo = 180;
+  if (cumplimiento < piso) return 0;
+  const limite = Math.min(cumplimiento, techo);
+  const factor = limite / 100;
+  return +(ponderacion * factor).toFixed(2);
+}
+
+function actualizarTabla(){
+  let total = 0;
+  document.querySelectorAll("#tablaCumplimiento tbody tr").forEach(fila => {
+    const ponderacion = parseFloat(fila.children[1].textContent);
+    const piso = parseFloat(fila.children[2].textContent);
+    const input = fila.querySelector("input");
+    const cumplimiento = parseFloat(input.value) || 0;
+    const puntaje = calcularPuntaje(cumplimiento, piso, ponderacion);
+    fila.querySelector(".puntaje").textContent = puntaje.toFixed(2);
+    total += puntaje;
+  });
+
+  const totalElement = document.getElementById("totalPuntaje");
+  totalElement.textContent = total.toFixed(2);
+
+  document.getElementById("resultadoTotal").textContent =
+    `✅ Cumplimiento total ponderado: ${total.toFixed(2)}%`;
+}
+
+document.querySelectorAll("#tablaCumplimiento input")
+  .forEach(input => input.addEventListener("input", actualizarTabla));
+
+actualizarTabla();
+</script>
+
+</body>
+</html>
