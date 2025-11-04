@@ -117,23 +117,22 @@
     <tr>
       <th>Variable</th>
       <th>Ponderación (%)</th>
-      <th>Piso (%)</th>
       <th>Cumplimiento Real (%)</th>
       <th>Puntaje</th>
     </tr>
   </thead>
   <tbody>
-    <tr><td>Stock de Clientes Activos</td><td>6.0</td><td>80</td><td><input type="number" min="0" max="180"></td><td></td></tr>
-    <tr><td>Desembolsos Micro (#)</td><td>25.0</td><td>85</td><td><input type="number" min="0" max="180"></td><td></td></tr>
-    <tr><td>Desembolsos Micro ($)</td><td>20.0</td><td>85</td><td><input type="number" min="0" max="180"></td><td></td></tr>
-    <tr><td>Saldo de Cartera ($)</td><td>10.0</td><td>90</td><td><input type="number" min="0" max="180"></td><td></td></tr>
-    <tr><td>Tarjeta de Crédito (#)</td><td>5.0</td><td>80</td><td><input type="number" min="0" max="180"></td><td></td></tr>
-    <tr><td>ICVT Micro</td><td>9.0</td><td>90</td><td><input type="number" min="0" max="180"></td><td></td></tr>
-    <tr><td>Contención / Rodados 1–30 a >30 días</td><td>5.0</td><td>90</td><td><input type="number" min="0" max="180"></td><td></td></tr>
-    <tr><td>Recuperación Franja 31–60 días</td><td>5.0</td><td>90</td><td><input type="number" min="0" max="180"></td><td></td></tr>
-    <tr><td>Indicador Cosechas Tempranas</td><td>5.0</td><td>90</td><td><input type="number" min="0" max="180"></td><td></td></tr>
-    <tr><td>Indicador Mora Menor</td><td>5.0</td><td>90</td><td><input type="number" min="0" max="180"></td><td></td></tr>
-    <tr><td>INS (Colectiva)</td><td>5.0</td><td>85</td><td><input type="number" min="0" max="180"></td><td></td></tr>
+    <tr data-piso="80"><td>Stock de Clientes Activos</td><td>6.0</td><td><input type="number" min="0" max="180"></td><td></td></tr>
+    <tr data-piso="85"><td>Desembolsos Micro (#)</td><td>25.0</td><td><input type="number" min="0" max="180"></td><td></td></tr>
+    <tr data-piso="85"><td>Desembolsos Micro ($)</td><td>20.0</td><td><input type="number" min="0" max="180"></td><td></td></tr>
+    <tr data-piso="90"><td>Saldo de Cartera ($)</td><td>10.0</td><td><input type="number" min="0" max="180"></td><td></td></tr>
+    <tr data-piso="80"><td>Tarjeta de Crédito (#)</td><td>5.0</td><td><input type="number" min="0" max="180"></td><td></td></tr>
+    <tr data-piso="90"><td>ICVT Micro</td><td>9.0</td><td><input type="number" min="0" max="180"></td><td></td></tr>
+    <tr data-piso="90"><td>Contención / Rodados 1–30 a >30 días</td><td>5.0</td><td><input type="number" min="0" max="180"></td><td></td></tr>
+    <tr data-piso="90"><td>Recuperación Franja 31–60 días</td><td>5.0</td><td><input type="number" min="0" max="180"></td><td></td></tr>
+    <tr data-piso="90"><td>Indicador Cosechas Tempranas</td><td>5.0</td><td><input type="number" min="0" max="180"></td><td></td></tr>
+    <tr data-piso="90"><td>Indicador Mora Menor</td><td>5.0</td><td><input type="number" min="0" max="180"></td><td></td></tr>
+    <tr data-piso="85"><td>INS (Colectiva)</td><td>5.0</td><td><input type="number" min="0" max="180"></td><td></td></tr>
   </tbody>
 </table>
 
@@ -150,11 +149,10 @@ document.getElementById('calcular').addEventListener('click', () => {
 
   filas.forEach(fila => {
     const ponderacion = parseFloat(fila.children[1].textContent);
-    const piso = parseFloat(fila.children[2].textContent);
-    const input = fila.children[3].querySelector('input');
+    const piso = parseFloat(fila.dataset.piso); // ahora el piso está en un atributo oculto
+    const input = fila.children[2].querySelector('input');
     let cumplimiento = parseFloat(input.value) || 0;
 
-    // techo máximo
     if (cumplimiento > 180) cumplimiento = 180;
 
     let puntaje = 0;
@@ -162,7 +160,7 @@ document.getElementById('calcular').addEventListener('click', () => {
       puntaje = Math.min((cumplimiento / 100) * ponderacion, (180 / 100) * ponderacion);
     }
 
-    fila.children[4].textContent = puntaje.toFixed(2) + ' pts';
+    fila.children[3].textContent = puntaje.toFixed(2) + ' pts';
     total += puntaje;
   });
 
