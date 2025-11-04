@@ -1,174 +1,159 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculadora de Cumplimiento Integral</title>
+  <title>Calculadora de Comisiones</title>
   <style>
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
-      background: #f3f5f9;
+      background: #f4f6f8;
       color: #2c3e50;
-      padding: 40px 10px;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 30px;
     }
 
     h1 {
       text-align: center;
-      color: #1a2537;
       margin-bottom: 30px;
-      font-weight: 600;
+      color: #1a5276;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      background: white;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
     }
 
     th, td {
-      border: 1px solid #e3e6ed;
-      padding: 12px 10px;
-      text-align: center;
-      font-size: 15px;
+      text-align: left;
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
     }
 
     th {
-      background: #34495e;
+      background: #1a5276;
       color: white;
-      font-weight: 500;
-      letter-spacing: 0.3px;
-    }
-
-    tr:nth-child(even) {
-      background: #fafbfc;
     }
 
     tr:hover {
-      background: #f1f4f9;
+      background-color: #f8f9f9;
     }
 
-    input[type="number"] {
-      width: 90px;
+    input {
+      width: 80px;
       padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
       text-align: right;
-      border: 1px solid #ccd1d9;
-      border-radius: 6px;
-      font-size: 14px;
-      outline: none;
-      transition: all 0.2s ease;
     }
 
-    input[type="number"]:focus {
-      border-color: #2980b9;
-      box-shadow: 0 0 4px rgba(41,128,185,0.3);
+    #total {
+      font-weight: bold;
+      text-align: right;
+      font-size: 1.1em;
+      color: #1a5276;
     }
 
-    #calcular {
-      background: #2980b9;
-      color: white;
-      border: none;
-      padding: 14px 24px;
-      border-radius: 6px;
-      cursor: pointer;
+    .hidden {
+      display: none;
+    }
+
+    .total-container {
+      text-align: right;
       margin-top: 20px;
-      display: block;
-      width: 100%;
-      font-size: 16px;
-      letter-spacing: 0.5px;
-      transition: all 0.2s ease;
-    }
-
-    #calcular:hover {
-      background: #2471a3;
-    }
-
-    #resultado {
-      margin-top: 25px;
-      text-align: center;
-      font-size: 24px;
-      font-weight: 600;
-      color: #2c3e50;
-    }
-
-    #resultado span {
-      padding: 10px 18px;
-      border-radius: 8px;
-      color: white;
-      font-weight: 700;
-    }
-
-    footer {
-      text-align: center;
-      font-size: 13px;
-      color: #7f8c8d;
-      margin-top: 40px;
+      font-size: 1.3em;
+      font-weight: bold;
+      color: #1a5276;
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h1>Calculadora de Comisiones</h1>
+    <table id="tabla">
+      <thead>
+        <tr>
+          <th>Variable</th>
+          <th>Cumplimiento (%)</th>
+          <th>Puntos</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-ponderacion="9" data-piso="80">ICVT Micro (9%)</td>
+          <td><input type="number" value="0" min="0" max="200" oninput="calcular()"></td>
+          <td class="puntos">0</td>
+        </tr>
+        <tr>
+          <td data-ponderacion="8" data-piso="75">ICVT Pequeña (8%)</td>
+          <td><input type="number" value="0" min="0" max="200" oninput="calcular()"></td>
+          <td class="puntos">0</td>
+        </tr>
+        <tr>
+          <td data-ponderacion="12" data-piso="80">Cartera Vigente (12%)</td>
+          <td><input type="number" value="0" min="0" max="200" oninput="calcular()"></td>
+          <td class="puntos">0</td>
+        </tr>
+        <tr>
+          <td data-ponderacion="10" data-piso="85">Captaciones (10%)</td>
+          <td><input type="number" value="0" min="0" max="200" oninput="calcular()"></td>
+          <td class="puntos">0</td>
+        </tr>
+        <tr>
+          <td data-ponderacion="6" data-piso="80">CDAT (6%)</td>
+          <td><input type="number" value="0" min="0" max="200" oninput="calcular()"></td>
+          <td class="puntos">0</td>
+        </tr>
+      </tbody>
+    </table>
 
-<h1>Calculadora de Cumplimiento Integral</h1>
+    <div class="total-container">
+      Total Cumplimiento: <span id="total">0</span>%
+    </div>
+  </div>
 
-<table id="tabla">
-  <thead>
-    <tr>
-      <th>Variable</th>
-      <th>Cumplimiento Real (%)</th>
-      <th>Ponderación (%)</th>      
-      <th>Puntaje</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr data-piso="80"><td>Stock de Clientes Activos</td><td>6.0</td><td><input type="number" min="0" max="180"></td><td></td></tr>
-    <tr data-piso="85"><td>Desembolsos Micro (#)</td><td>25.0</td><td><input type="number" min="0" max="180"></td><td></td></tr>
-    <tr data-piso="85"><td>Desembolsos Micro ($)</td><td>20.0</td><td><input type="number" min="0" max="180"></td><td></td></tr>
-    <tr data-piso="90"><td>Saldo de Cartera ($)</td><td>10.0</td><td><input type="number" min="0" max="180"></td><td></td></tr>
-    <tr data-piso="80"><td>Tarjeta de Crédito (#)</td><td>5.0</td><td><input type="number" min="0" max="180"></td><td></td></tr>
-    <tr data-piso="90"><td>ICVT Micro</td><td>9.0</td><td><input type="number" min="0" max="180"></td><td></td></tr>
-    <tr data-piso="90"><td>Contención / Rodados 1–30 a >30 días</td><td>5.0</td><td><input type="number" min="0" max="180"></td><td></td></tr>
-    <tr data-piso="90"><td>Recuperación Franja 31–60 días</td><td>5.0</td><td><input type="number" min="0" max="180"></td><td></td></tr>
-    <tr data-piso="90"><td>Indicador Cosechas Tempranas</td><td>5.0</td><td><input type="number" min="0" max="180"></td><td></td></tr>
-    <tr data-piso="90"><td>Indicador Mora Menor</td><td>5.0</td><td><input type="number" min="0" max="180"></td><td></td></tr>
-    <tr data-piso="85"><td>INS (Colectiva)</td><td>5.0</td><td><input type="number" min="0" max="180"></td><td></td></tr>
-  </tbody>
-</table>
+  <script>
+    function calcular() {
+      const filas = document.querySelectorAll("#tabla tbody tr");
+      let total = 0;
 
-<button id="calcular">Calcular Cumplimiento Integral</button>
+      filas.forEach(fila => {
+        const input = fila.querySelector("input");
+        const puntosCell = fila.querySelector(".puntos");
+        const ponderacion = parseFloat(fila.cells[0].dataset.ponderacion);
+        const piso = parseFloat(fila.cells[0].dataset.piso);
+        const cumplimiento = parseFloat(input.value) || 0;
+        const techo = 180;
 
-<div id="resultado"></div>
+        let puntos = 0;
 
-<footer>© 2025 - Calculadora de Cumplimiento Integral</footer>
+        if (cumplimiento >= piso) {
+          let proporcion = (cumplimiento - piso) / (techo - piso);
+          proporcion = Math.min(proporcion, 1); // no pasa del 180%
+          puntos = ponderacion * (piso / 100 + proporcion * (techo - piso) / 100);
+          if (cumplimiento <= 100) {
+            puntos = ponderacion * (cumplimiento / 100);
+          } else {
+            puntos = ponderacion * (cumplimiento / 100);
+          }
+        }
 
-<script>
-document.getElementById('calcular').addEventListener('click', () => {
-  const filas = document.querySelectorAll('#tabla tbody tr');
-  let total = 0;
+        puntosCell.textContent = puntos.toFixed(2);
+        total += puntos;
+      });
 
-  filas.forEach(fila => {
-    const ponderacion = parseFloat(fila.children[1].textContent);
-    const piso = parseFloat(fila.dataset.piso); // ahora el piso está en un atributo oculto
-    const input = fila.children[2].querySelector('input');
-    let cumplimiento = parseFloat(input.value) || 0;
-
-    if (cumplimiento > 180) cumplimiento = 180;
-
-    let puntaje = 0;
-    if (cumplimiento >= piso) {
-      puntaje = Math.min((cumplimiento / 100) * ponderacion, (180 / 100) * ponderacion);
+      document.getElementById("total").textContent = total.toFixed(2);
     }
-
-    fila.children[3].textContent = puntaje.toFixed(2) + ' pts';
-    total += puntaje;
-  });
-
-  const resultado = document.getElementById('resultado');
-  let color = total >= 100 ? '#27ae60' : total >= 90 ? '#f1c40f' : '#e74c3c';
-  resultado.innerHTML = `Cumplimiento Integral Total: <span style="background:${color}">${total.toFixed(2)} pts</span>`;
-});
-</script>
-
+  </script>
 </body>
 </html>
