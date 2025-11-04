@@ -14,13 +14,14 @@
     body{
       font-family: "Segoe UI", Roboto, Arial, sans-serif;
       background: var(--surface);
-      margin: 36px;
+      margin: 24px;
       color:#111827;
     }
     h1{
       text-align:center;
       color:#0f172a;
       margin-bottom:20px;
+      font-size:1.5rem;
     }
     .card{
       max-width:960px;
@@ -88,13 +89,50 @@
       text-align:center;
     }
 
+    /* === MODO RESPONSIVE MEJORADO === */
     @media (max-width:720px){
-      table, thead, tbody, th, td, tr { display:block; }
+      h1 { font-size:1.25rem; }
+      body { margin: 16px; }
+
+      table, thead, tbody, th, td, tr { display:block; width:100%; }
       thead { display:none; }
-      tr { margin:10px 0; border-radius:8px; box-shadow:0 2px 6px rgba(2,6,23,0.03); }
-      td { text-align:left; padding:10px; border-bottom:0; }
-      td[data-label]:before { content: attr(data-label) ": "; font-weight:600; display:inline-block; width:140px; color:#374151; }
-      input[type="number"]{ width:100%; }
+      tr {
+        background:#fff;
+        border-radius:10px;
+        margin-bottom:16px;
+        box-shadow:0 3px 10px rgba(0,0,0,0.05);
+        padding:10px 12px;
+      }
+      td {
+        border:none;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        padding:8px 4px;
+        text-align:left;
+      }
+      td::before {
+        content: attr(data-label);
+        font-weight:600;
+        color:#374151;
+        flex:1;
+        text-align:left;
+      }
+      td:last-child {
+        border-top:1px solid #e5e7eb;
+        margin-top:6px;
+        padding-top:6px;
+      }
+      input[type="number"]{
+        width:100%;
+        text-align:center;
+        font-size:1rem;
+        padding:8px;
+      }
+      #total-top, #total-bottom {
+        text-align:center;
+        font-size:1.1rem;
+      }
     }
   </style>
 </head>
@@ -104,7 +142,7 @@
   <div class="card">
 
     <!-- Total arriba -->
-    <div id="total-top">Cumplimiento Total: <span id="badge-top" class="total-badge">0.00 pts</span></div>
+    <div id="total-top">Cumplimiento Integral Total: <span id="badge-top" class="total-badge">0.00 pts</span></div>
 
     <table id="tabla">
       <thead>
@@ -116,68 +154,72 @@
       </thead>
       <tbody>
         <tr data-ponderacion="6.0" data-piso="80">
-          <td>Stock de Clientes Activos (6%)</td>
-          <td><input type="number" min="0" max="200" value="0"></td>
-          <td class="puntaje">0.00 pts</td>
+          <td data-label="Variable">Stock de Clientes Activos (6%)</td>
+          <td data-label="Cumplimiento real (%)"><input type="number" min="0" max="200" value="0"></td>
+          <td data-label="Puntaje" class="puntaje">0.00 pts</td>
         </tr>
         <tr data-ponderacion="25.0" data-piso="85">
-          <td>Desembolsos Micro (#) (25%)</td>
-          <td><input type="number" min="0" max="200" value="0"></td>
-          <td class="puntaje">0.00 pts</td>
+          <td data-label="Variable">Desembolsos Micro (#) (25%)</td>
+          <td data-label="Cumplimiento real (%)"><input type="number" min="0" max="200" value="0"></td>
+          <td data-label="Puntaje" class="puntaje">0.00 pts</td>
         </tr>
         <tr data-ponderacion="20.0" data-piso="85">
-          <td>Desembolsos Micro ($) (20%)</td>
-          <td><input type="number" min="0" max="200" value="0"></td>
-          <td class="puntaje">0.00 pts</td>
+          <td data-label="Variable">Desembolsos Micro ($) (20%)</td>
+          <td data-label="Cumplimiento real (%)"><input type="number" min="0" max="200" value="0"></td>
+          <td data-label="Puntaje" class="puntaje">0.00 pts</td>
         </tr>
         <tr data-ponderacion="10.0" data-piso="90">
-          <td>Saldo de Cartera ($) (10%)</td>
-          <td><input type="number" min="0" max="200" value="0"></td>
-          <td class="puntaje">0.00 pts</td>
+          <td data-label="Variable">Saldo de Cartera ($) (10%)</td>
+          <td data-label="Cumplimiento real (%)"><input type="number" min="0" max="200" value="0"></td>
+          <td data-label="Puntaje" class="puntaje">0.00 pts</td>
         </tr>
         <tr data-ponderacion="5.0" data-piso="80">
-          <td>Tarjeta de Crédito (#) (5%)</td>
-          <td><input type="number" min="0" max="200" value="0"></td>
-          <td class="puntaje">0.00 pts</td>
+          <td data-label="Variable">Tarjeta de Crédito (#) (5%)</td>
+          <td data-label="Cumplimiento real (%)"><input type="number" min="0" max="200" value="0"></td>
+          <td data-label="Puntaje" class="puntaje">0.00 pts</td>
         </tr>
         <tr data-ponderacion="9.0" data-piso="90">
-          <td>ICVT Micro (9%)</td>
-          <td><input type="number" min="0" max="200" value="0"></td>
-          <td class="puntaje">0.00 pts</td>
+          <td data-label="Variable">ICVT Micro (9%)</td>
+          <td data-label="Cumplimiento real (%)"><input type="number" min="0" max="200" value="0"></td>
+          <td data-label="Puntaje" class="puntaje">0.00 pts</td>
         </tr>
         <tr data-ponderacion="5.0" data-piso="90">
-          <td>Contención / Rodados 1–30 a >30 días (5%)</td>
-          <td><input type="number" min="0" max="200" value="0"></td>
-          <td class="puntaje">0.00 pts</td>
+          <td data-label="Variable">Contención / Rodados 1–30 a >30 días (5%)</td>
+          <td data-label="Cumplimiento real (%)"><input type="number" min="0" max="200" value="0"></td>
+          <td data-label="Puntaje" class="puntaje">0.00 pts</td>
         </tr>
         <tr data-ponderacion="5.0" data-piso="90">
-          <td>Recuperación Franja 31–60 días (5%)</td>
-          <td><input type="number" min="0" max="200" value="0"></td>
-          <td class="puntaje">0.00 pts</td>
+          <td data-label="Variable">Recuperación Franja 31–60 días (5%)</td>
+          <td data-label="Cumplimiento real (%)"><input type="number" min="0" max="200" value="0"></td>
+          <td data-label="Puntaje" class="puntaje">0.00 pts</td>
         </tr>
         <tr data-ponderacion="5.0" data-piso="90">
-          <td>Indicador Cosechas Tempranas (5%)</td>
-          <td><input type="number" min="0" max="200" value="0"></td>
-          <td class="puntaje">0.00 pts</td>
+          <td data-label="Variable">Indicador Cosechas Tempranas (5%)</td>
+          <td data-label="Cumplimiento real (%)"><input type="number" min="0" max="200" value="0"></td>
+          <td data-label="Puntaje" class="puntaje">0.00 pts</td>
         </tr>
         <tr data-ponderacion="5.0" data-piso="90">
-          <td>Indicador Mora Menor (5%)</td>
-          <td><input type="number" min="0" max="200" value="0"></td>
-          <td class="puntaje">0.00 pts</td>
+          <td data-label="Variable">Indicador Mora Menor (5%)</td>
+          <td data-label="Cumplimiento real (%)"><input type="number" min="0" max="200" value="0"></td>
+          <td data-label="Puntaje" class="puntaje">0.00 pts</td>
         </tr>
         <tr data-ponderacion="5.0" data-piso="85">
-          <td>INS (Colectiva) (5%)</td>
-          <td><input type="number" min="0" max="200" value="0"></td>
-          <td class="puntaje">0.00 pts</td>
+          <td data-label="Variable">INS (Colectiva) (5%)</td>
+          <td data-label="Cumplimiento real (%)"><input type="number" min="0" max="200" value="0"></td>
+          <td data-label="Puntaje" class="puntaje">0.00 pts</td>
         </tr>
       </tbody>
     </table>
 
     <!-- Total abajo -->
     <div id="total-bottom" style="margin-top:12px;">
-      Cumplimiento Total: <span id="badge-bottom" class="total-badge">0.00 pts</span>
+      Cumplimiento Integral Total: <span id="badge-bottom" class="total-badge">0.00 pts</span>
     </div>
 
+    <div style="margin-top:12px; text-align:right;">
+      <span class="muted">Regla:</span>
+      <span class="muted">si cumplimiento &lt; piso → 0 puntos. Si cumplimiento ≥ piso → puntaje = (min(cumplimiento,180)/100)*ponderación.</span>
+    </div>
   </div>
 
   <script>
