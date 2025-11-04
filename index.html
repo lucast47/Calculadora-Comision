@@ -1,241 +1,162 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calculadora de Cumplimiento Integral</title>
   <style>
-    :root{
-      --primary:#2563eb;
-      --card-bg:#fff;
-      --muted:#6b7280;
-      --surface:#f8fafc;
-    }
-    body{
-      font-family: "Segoe UI", Roboto, Arial, sans-serif;
-      background: var(--surface);
-      margin: 36px;
-      color:#111827;
-    }
-    h1{
-      text-align:center;
-      color:#0f172a;
-      margin-bottom:20px;
-    }
-    .card{
-      max-width:960px;
-      margin:0 auto;
-      background:var(--card-bg);
-      padding:24px;
-      border-radius:12px;
-      box-shadow:0 6px 18px rgba(15,23,42,0.08);
+    body {
+      font-family: Arial, sans-serif;
+      background: #f6f7fb;
+      color: #333;
+      padding: 10px;
+      margin: 0;
     }
 
-    table{
-      width:100%;
-      border-collapse:collapse;
-      margin-top:12px;
-      background:#fff;
-      border-radius:8px;
-      overflow:hidden;
-      box-shadow:0 4px 12px rgba(2,6,23,0.04);
-    }
-    thead th{
-      background:var(--primary);
-      color:#fff;
-      font-weight:600;
-      text-align:right;
-      padding:12px;
-    }
-    th, td{
-      padding:10px 12px;
-      border-bottom:1px solid #e6edf3;
-      font-size:0.95rem;
-      text-align:right;
-    }
-    tbody td:first-child, thead th:first-child {
-      text-align:left;
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      font-size: 1.4em;
+      margin: 10px 0;
     }
 
-    tr:nth-child(even){ background:#fbfdff; }
-    tr:hover{ background:#f1f7ff; }
-
-    input[type="number"]{
-      width:100px;
-      padding:8px;
-      border-radius:8px;
-      border:1px solid #d1d5db;
-      font-size:0.95rem;
-      text-align:right;
+    /* Resultado superior fijo */
+    #resultado-superior {
+      position: sticky;
+      top: 0;
+      background: #f6f7fb;
+      z-index: 10;
+      padding: 10px 0;
+      border-bottom: 2px solid #ddd;
     }
 
-    .muted { color: var(--muted); font-size:0.90rem; }
-
-    .total-row td {
-      font-weight:700;
-      font-size:1.05rem;
-      background:#f9fafb;
-      border-top:2px solid #e6edf3;
+    .resultado {
+      text-align: center;
+      font-size: 1.2em;
+      font-weight: bold;
+      margin: 8px 0;
     }
 
-    #total-top, #total-bottom {
-      text-align:right;
-      font-size:1.2rem;
-      font-weight:700;
-      margin-bottom:10px;
+    .resultado span {
+      padding: 6px 12px;
+      border-radius: 6px;
+      color: white;
     }
 
-    .total-badge {
-      display:inline-block;
-      padding:8px 14px;
-      border-radius:10px;
-      color:#fff;
-      font-weight:700;
-      min-width:120px;
-      text-align:center;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      font-size: 0.9em;
+      margin-top: 10px;
     }
 
-    @media (max-width:720px){
-      table, thead, tbody, th, td, tr { display:block; }
-      thead { display:none; }
-      tr { margin:10px 0; border-radius:8px; box-shadow:0 2px 6px rgba(2,6,23,0.03); }
-      td { text-align:left; padding:10px; border-bottom:0; }
-      td[data-label]:before { content: attr(data-label) ": "; font-weight:600; display:inline-block; width:140px; color:#374151; }
-      input[type="number"]{ width:100%; }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+      word-wrap: break-word;
+    }
+
+    th {
+      background: #2c3e50;
+      color: white;
+      font-size: 0.85em;
+    }
+
+    td:first-child {
+      text-align: left;
+    }
+
+    input[type="number"] {
+      width: 70px;
+      padding: 5px;
+      text-align: right;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    @media (max-width: 600px) {
+      table {
+        font-size: 0.8em;
+      }
+      th, td {
+        padding: 6px;
+      }
+      input[type="number"] {
+        width: 60px;
+      }
+      #resultado-superior {
+        font-size: 1em;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>Calculadora de Cumplimiento Integral</h1>
 
-  <div class="card">
+<h1>Calculadora de Cumplimiento Integral</h1>
 
-    <!-- Total arriba -->
-    <div id="total-top">Cumplimiento Integral Total: <span id="badge-top" class="total-badge">0.00 pts</span></div>
+<div id="resultado-superior" class="resultado"></div>
 
-    <table id="tabla">
-      <thead>
-        <tr>
-          <th>Variable</th>
-          <th>Cumplimiento real (%)</th>
-          <th>Puntaje</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr data-ponderacion="6.0" data-piso="80">
-          <td>Stock de Clientes Activos (6%)</td>
-          <td><input type="number" min="0" max="200" value="0"></td>
-          <td class="puntaje">0.00 pts</td>
-        </tr>
-        <tr data-ponderacion="25.0" data-piso="85">
-          <td>Desembolsos Micro (#) (25%)</td>
-          <td><input type="number" min="0" max="200" value="0"></td>
-          <td class="puntaje">0.00 pts</td>
-        </tr>
-        <tr data-ponderacion="20.0" data-piso="85">
-          <td>Desembolsos Micro ($) (20%)</td>
-          <td><input type="number" min="0" max="200" value="0"></td>
-          <td class="puntaje">0.00 pts</td>
-        </tr>
-        <tr data-ponderacion="10.0" data-piso="90">
-          <td>Saldo de Cartera ($) (10%)</td>
-          <td><input type="number" min="0" max="200" value="0"></td>
-          <td class="puntaje">0.00 pts</td>
-        </tr>
-        <tr data-ponderacion="5.0" data-piso="80">
-          <td>Tarjeta de Crédito (#) (5%)</td>
-          <td><input type="number" min="0" max="200" value="0"></td>
-          <td class="puntaje">0.00 pts</td>
-        </tr>
-        <tr data-ponderacion="9.0" data-piso="90">
-          <td>ICVT Micro (9%)</td>
-          <td><input type="number" min="0" max="200" value="0"></td>
-          <td class="puntaje">0.00 pts</td>
-        </tr>
-        <tr data-ponderacion="5.0" data-piso="90">
-          <td>Contención / Rodados 1–30 a >30 días (5%)</td>
-          <td><input type="number" min="0" max="200" value="0"></td>
-          <td class="puntaje">0.00 pts</td>
-        </tr>
-        <tr data-ponderacion="5.0" data-piso="90">
-          <td>Recuperación Franja 31–60 días (5%)</td>
-          <td><input type="number" min="0" max="200" value="0"></td>
-          <td class="puntaje">0.00 pts</td>
-        </tr>
-        <tr data-ponderacion="5.0" data-piso="90">
-          <td>Indicador Cosechas Tempranas (5%)</td>
-          <td><input type="number" min="0" max="200" value="0"></td>
-          <td class="puntaje">0.00 pts</td>
-        </tr>
-        <tr data-ponderacion="5.0" data-piso="90">
-          <td>Indicador Mora Menor (5%)</td>
-          <td><input type="number" min="0" max="200" value="0"></td>
-          <td class="puntaje">0.00 pts</td>
-        </tr>
-        <tr data-ponderacion="5.0" data-piso="85">
-          <td>INS (Colectiva) (5%)</td>
-          <td><input type="number" min="0" max="200" value="0"></td>
-          <td class="puntaje">0.00 pts</td>
-        </tr>
-      </tbody>
-    </table>
+<table id="tabla">
+  <thead>
+    <tr>
+      <th>Variable</th>
+      <th>Cumplimiento Real (%)</th>
+      <th>Puntaje</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr data-ponderacion="6.0" data-piso="80"><td>Stock de Clientes Activos (6%)</td><td><input type="number" min="0" max="180" value="0"></td><td></td></tr>
+    <tr data-ponderacion="25.0" data-piso="85"><td>Desembolsos Micro (#) (25%)</td><td><input type="number" min="0" max="180" value="0"></td><td></td></tr>
+    <tr data-ponderacion="20.0" data-piso="85"><td>Desembolsos Micro ($) (20%)</td><td><input type="number" min="0" max="180" value="0"></td><td></td></tr>
+    <tr data-ponderacion="10.0" data-piso="90"><td>Saldo de Cartera ($) (10%)</td><td><input type="number" min="0" max="180" value="0"></td><td></td></tr>
+    <tr data-ponderacion="5.0" data-piso="80"><td>Tarjeta de Crédito (#) (5%)</td><td><input type="number" min="0" max="180" value="0"></td><td></td></tr>
+    <tr data-ponderacion="9.0" data-piso="90"><td>ICVT Micro (9%)</td><td><input type="number" min="0" max="180" value="0"></td><td></td></tr>
+    <tr data-ponderacion="5.0" data-piso="90"><td>Contención / Rodados 1–30 a >30 días (5%)</td><td><input type="number" min="0" max="180" value="0"></td><td></td></tr>
+    <tr data-ponderacion="5.0" data-piso="90"><td>Recuperación Franja 31–60 días (5%)</td><td><input type="number" min="0" max="180" value="0"></td><td></td></tr>
+    <tr data-ponderacion="5.0" data-piso="90"><td>Indicador Cosechas Tempranas (5%)</td><td><input type="number" min="0" max="180" value="0"></td><td></td></tr>
+    <tr data-ponderacion="5.0" data-piso="90"><td>Indicador Mora Menor (5%)</td><td><input type="number" min="0" max="180" value="0"></td><td></td></tr>
+    <tr data-ponderacion="5.0" data-piso="85"><td>INS (Colectiva) (5%)</td><td><input type="number" min="0" max="180" value="0"></td><td></td></tr>
+  </tbody>
+</table>
 
-    <!-- Total abajo -->
-    <div id="total-bottom" style="margin-top:12px;">
-      Cumplimiento Integral Total: <span id="badge-bottom" class="total-badge">0.00 pts</span>
-    </div>
+<div id="resultado-inferior" class="resultado"></div>
 
-    <div style="margin-top:12px; text-align:right;">
-      <span class="muted">Regla:</span>
-      <span class="muted">si cumplimiento &lt; piso → 0 puntos. Si cumplimiento ≥ piso → puntaje = (min(cumplimiento,180)/100)*ponderación.</span>
-    </div>
-  </div>
+<script>
+function calcular() {
+  const filas = document.querySelectorAll('#tabla tbody tr');
+  let total = 0;
 
-  <script>
-    function calcular() {
-      const filas = document.querySelectorAll("#tabla tbody tr");
-      let total = 0;
+  filas.forEach(fila => {
+    const ponderacion = parseFloat(fila.dataset.ponderacion);
+    const piso = parseFloat(fila.dataset.piso);
+    const input = fila.querySelector('input');
+    let cumplimiento = parseFloat(input.value) || 0;
 
-      filas.forEach(fila => {
-        const ponderacion = parseFloat(fila.dataset.ponderacion);
-        const piso = parseFloat(fila.dataset.piso);
-        const input = fila.querySelector("input");
-        let cumplimiento = parseFloat(input.value) || 0;
-
-        if (cumplimiento > 180) cumplimiento = 180;
-
-        let puntaje = 0;
-        if (cumplimiento >= piso) {
-          puntaje = (cumplimiento / 100) * ponderacion;
-          const maxPuntos = (180 / 100) * ponderacion;
-          if (puntaje > maxPuntos) puntaje = maxPuntos;
-        }
-
-        fila.querySelector(".puntaje").textContent = puntaje.toFixed(2) + " pts";
-        total += puntaje;
-      });
-
-      actualizarTotales(total);
+    if (cumplimiento > 180) cumplimiento = 180;
+    let puntaje = 0;
+    if (cumplimiento >= piso) {
+      puntaje = (cumplimiento / 100) * ponderacion;
     }
 
-    function actualizarTotales(total) {
-      const color = total >= 100 ? "#27ae60" : total >= 90 ? "#f1c40f" : "#e74c3c";
-      const texto = total.toFixed(2) + " pts";
+    fila.children[2].textContent = puntaje.toFixed(2) + ' pts';
+    total += puntaje;
+  });
 
-      ["badge-top", "badge-bottom"].forEach(id => {
-        const el = document.getElementById(id);
-        el.textContent = texto;
-        el.style.background = color;
-      });
-    }
+  const color = total >= 100 ? '#27ae60' : total >= 90 ? '#f1c40f' : '#e74c3c';
+  const texto = `Cumplimiento Integral Total: <span style="background:${color}">${total.toFixed(2)} pts</span>`;
+  document.getElementById('resultado-superior').innerHTML = texto;
+  document.getElementById('resultado-inferior').innerHTML = texto;
+}
 
-    // Escucha todos los cambios
-    document.querySelectorAll("input[type='number']").forEach(input => {
-      input.addEventListener("input", calcular);
-    });
+document.querySelectorAll('input[type="number"]').forEach(input => {
+  input.addEventListener('input', calcular);
+});
 
-    // Calcular al cargar
-    window.addEventListener("load", calcular);
-  </script>
+calcular();
+</script>
+
 </body>
 </html>
